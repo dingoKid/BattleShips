@@ -2,25 +2,22 @@ import java.util.Scanner;
 
 public class Game {
 	
-	public static int playerShips = 0;
-	public static int computerShips = 0;
-	public static char[][] table = new char[10][10];
-	public static Scanner input = new Scanner(System.in);
+	private static int playerShips = 0;
+	private static int computerShips = 0;
+	private static char[][] table = new char[10][10];
+	private static Scanner input = new Scanner(System.in);
 
 	public static void main(String[] args) {
 								
-		getPlayerShips();
-		getComputerShips();
-		showTable();
-		playerGuess();
+		startGame();
 
 	}
 	
 	private static void startGame() {
 		System.out.println("Welcome to Battle Ships!");
-		showTable();
 		getPlayerShips();
 		getComputerShips();
+		play();
 	}
 	
 	private static void showTable() {
@@ -29,10 +26,11 @@ public class Game {
 			System.out.print(i + " |");
 			for(int j = 0; j < table[i].length; j++) {
 				if(table[i][j] == '2') {
-					//System.out.print('\0');
-					System.out.print(table[i][j]);
+					System.out.print('\0');
 				} else if(table[i][j] == '1') {
 					System.out.print('@');
+				} else if(table[i][j] == '*') {
+					System.out.print('\0');
 				} else {
 					System.out.print(table[i][j]);
 				}
@@ -61,7 +59,6 @@ public class Game {
 				System.out.println("Coordinates not exist or reserved");
 			}
 		}
-		showTable();
 	}
 	
 	private static void getComputerShips() {
@@ -116,7 +113,29 @@ public class Game {
 	}
 	
 	private static void computerGuess() {
-		
+		System.out.println("Computer's turn");
+		while(true) {
+			int x = (int) (Math.random()*10);
+			int y = (int) (Math.random()*10);
+			if(table[x][y] == '1') {
+				System.out.println("The computer sunk your ship!");
+				table[x][y] = 'x';
+				playerShips--;
+				break;
+			} else if(table[x][y] == '2') {
+				System.out.println("The computer sunk its own ship!");
+				table[x][y] = '!';
+				computerShips--;
+				break;
+			} else if(table[x][y] == '*') {
+				continue;
+			} else {
+				System.out.println("The computer missed!");
+				table[x][y] = '*';
+				break;
+			}
+		}
+		if(playerShips == 0) gameOver();
 	}
 	
 	private static void gameOver() {
@@ -128,8 +147,6 @@ public class Game {
 			System.out.println("The computer won!");
 			System.out.println("Your ships: " + playerShips + " | Computer ships: " + computerShips);
 		}
+		System.exit(0);
 	}
-	
-	
-
 }
